@@ -208,15 +208,22 @@ def showRestaurants():
     else:
         return render_template('restaurants.html', restaurants=restaurants)
 
+#creating a new restaurant
+@app.route('/restaurant/new', methods=["GET","POST"])
+def newRestaurant():
+    if 'username' not in login_session:
+        return redirect('/login')
+    if request.method =='POST':
+        newRestaurant = Restaurant(
+        name=request.form['name'],
+        user_id=login_session['user_id']
+        )
+        session.add(newRestaurant)
+        session.commit()
+        return redirect(url_for('showRestaurants'))
 
-@app.route('/login')
-def login():
-    return "login"
-
-
-@app.route('/logout')
-def logout():
-    return "logout"
+    else:
+        return render_template('newRestaurant.html')
 
 
 if __name__ == '__main__':
