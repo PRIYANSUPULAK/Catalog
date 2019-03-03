@@ -224,7 +224,36 @@ def newRestaurant():
 
     else:
         return render_template('newRestaurant.html')
-
+#Editing the restaurant
+@app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
+def editRestaurant(restaurant_id):
+    editedRestaurant = session.query(
+        Restaurant).filter_by(id=restaurant_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if editedRestaurant.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to edit this restaurant. Please create your own restaurant in order to edit.');}</script><body onload='myFunction()''>"
+    if request.method == 'POST':
+        if request.form['name']:
+            editedRestaurant.name = request.form['name']
+            flash('Restaurant Successfully Edited %s' % editedRestaurant.name)
+            return redirect(url_for('showRestaurants'))
+    else:
+        return render_template('editRestaurant.html', restaurant=editedRestaurant)
+#deleting the restaurantToDelete
+@app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET','POST'])
+def deleteRestaurant(restaurant_id):
+    restaurantToDelete = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if restaurantToDelete.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to edit this restaurant. Please create your own restaurant in order to edit.');}</script><body onload='myFunction()''>"
+    if request.method == 'POST':
+        session.delete(restaurantToDelete)
+        session.commit()
+        return redirect(url_for('showRestaurants'))
+    else:
+        return render_template('deleteRestaurant.html',restaurant=restaurantToDelete)
 
 if __name__ == '__main__':
     app.secret_key = 'secret_key'
