@@ -241,7 +241,7 @@ def editRestaurant(restaurant_id):
     else:
         return render_template('editRestaurant.html', restaurant=editedRestaurant)
 
-#deleting the restaurantToDelete
+#deleting the restaurant
 @app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET','POST'])
 def deleteRestaurant(restaurant_id):
     restaurantToDelete = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -314,7 +314,22 @@ def editMenuItem(restaurant_id, menu_id):
     else:
         return render_template('editMenuItem.html',item = editedItem, restaurant_id=restaurant_id, menu_id=menu_id)
 
-
+#delete a menu
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET','POST'])
+def deleteMenuItem(restaurant_id,menu_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    itemToDelete = session.query(MenuItem).filter_by(id=menu_id).one()
+    if login_session['user_id'] != restaurant.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to delete menu items to this restaurant. Please create your own restaurant in order to delete items.');}</script><body onload='myFunction()''>"
+    if request.method == 'POST':
+        session.delete(itemToDelete)
+        session.commit()
+        flash('Menu Item Successfully Deleted')
+        return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+    else:
+        return render_template('deleteMenu.html', item=itemToDelete)
 
 if __name__ == '__main__':
     app.secret_key = 'secret_key'
