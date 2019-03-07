@@ -21,5 +21,5 @@ From your terminal, inside the project directory, run the command 'vagrant up'. 
 ### Run the program
 `python3 log.py`
 
-###Author
+### Author
 PRIYANSU PULAK
