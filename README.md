@@ -19,7 +19,7 @@ This application provides a list of items within a variety of categories as well
 From your terminal, inside the project directory, run the command 'vagrant up'. This will cause Vagrant to download the Linux operating system and install it. When downloading is finished, you will get your shell prompt back. At this point, you can run 'vagrant ssh' to log in to your newly installed Linux VM.
 
 ### Run the program
-`python3 log.py`
+`python3 app.py`
 
 ### Author
 PRIYANSU PULAK
